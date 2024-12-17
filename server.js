@@ -33,6 +33,11 @@ io.on("connection", (socket) => {
     socket.on("end-call",({from,to})=>{
         io.to(allUser[to].id).emit("end-call",{from,to});
     });
+    socket.on("call-ended",caller=>{
+        const [from,to] = caller;
+        io.to(allUser[from].id).emit("call-ended",caller);
+        io.to(allUser[to].id).emit("call-ended",caller);
+    })
     socket.on("icecandidate",candidate=>{
         //broadcast to other candidate
         socket.broadcast.emit("icecandidate",candidate)

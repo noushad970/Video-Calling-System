@@ -24,4 +24,17 @@ io.on("connection", (socket) => {
         allUser[username]={username,id:socket.id};
         io.emit("joined",allUser);
     });
+    socket.on("offer",({from,to,offer})=>{
+        io.to(allUser[to].id).emit("offer",{from,to,offer});
+    })
+    socket.on("answer",({from,to,answer})=>{
+        io.to(allUser[from].id).emit("answer",{from,to,answer});
+    })
+    socket.on("end-call",({from,to})=>{
+        io.to(allUser[to].id).emit("end-call",{from,to});
+    });
+    socket.on("icecandidate",candidate=>{
+        //broadcast to other candidate
+        socket.broadcast.emit("icecandidate",candidate)
+    });
 }) 
